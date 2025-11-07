@@ -1,2 +1,2 @@
-# solana_journey
-My Solana Journey
+# Solana journey
+Another experimentation, this one on the blockchain :sunglasses:

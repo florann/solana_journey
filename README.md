@@ -52,15 +52,25 @@ Another experimentation, this one on the blockchain :sunglasses:
 
 **Account information**
 
+Type : 
+* Wallet account
+  * Stored SOL token, main account of the user with public address.
+* Token account
+  * Allow storing non SOL token linked to the Wallet account
+* Token Program account
+  * Stored executable binary on the blockchain
+* Mint account - (**Always linked to the Token program account**)
+  * Unique account link to a Token on the blockchain used to describ it and mint it.
+
 Account structure : 
 
 ```json
 {
   "data": {
     "type": "Buffer",
-    "data": [] //Binary of the executable code, if nothing then wallet
+    "data": [] //Binary of the executable code, store data if Mint account or nothing if wallet or token 
   },
-  "executable": false, //True : Executable code account, False: Wallet account 
+  "executable": false, //True : Executable code account, False: Wallet account or Mint account or Token account
   "lamports": 1000000000, // Balance of the wallet in Lamport ( 1 Lamport = 0.000,000,001 SOL )
   "owner": "11111111111111111111111111111111", // The program that own the account, for wallet it's alaway System Program 111.....
   "rentEpoch": 0, // Obsolete

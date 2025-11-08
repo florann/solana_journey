@@ -43,3 +43,27 @@ Another experimentation, this one on the blockchain :sunglasses:
   2. Executes `anchor deploy`
   3. Runs tests
   4. Shuts down the Solana validator
+ 
+---
+
+## Solana Network 
+
+### Reading from Network 
+
+**Account information**
+
+Account structure : 
+
+```json
+{
+  "data": {
+    "type": "Buffer",
+    "data": [] //Binary of the executable code, if nothing then wallet
+  },
+  "executable": false, //True : Executable code account, False: Wallet account 
+  "lamports": 1000000000, // Balance of the wallet in Lamport ( 1 Lamport = 0.000,000,001 SOL )
+  "owner": "11111111111111111111111111111111", // The program that own the account, for wallet it's alaway System Program 111.....
+  "rentEpoch": 0, // Obsolete
+  "space": 0 // Number of bytes of the executable code ( data[] )
+}
+```

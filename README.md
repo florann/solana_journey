@@ -128,3 +128,29 @@ Run the transaction on the blockchain
 | **Freeze Authority** | Can freeze token accounts | `wallet.publicKey` |
 | **Program Owner** | Which program manages this mint | `TOKEN_2022_PROGRAM_ID` |
 
+--- 
+
+## Program Lifecycle
+
+### Deploy
+```bash
+anchor deploy
+```
+- Uploads program binary to blockchain
+- Costs ~2-5 SOL (on mainnet)
+- Creates permanent program account
+
+### Upgrade
+```bash
+anchor upgrade 
+```
+- Same Program ID, updated code
+- Replaces old binary with new one
+
+### Close
+```bash
+solana program close 
+```
+- Deletes program binary
+- Returns SOL to your wallet
+- Account remains (but empty)

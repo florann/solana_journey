@@ -43,3 +43,114 @@ Another experimentation, this one on the blockchain :sunglasses:
   2. Executes `anchor deploy`
   3. Runs tests
   4. Shuts down the Solana validator
+ 
+---
+
+## Solana Network 
+
+### Reading from Network 
+
+**Account information**
+
+Type : 
+* Wallet account
+  * Stored SOL token, main account of the user with public address.
+* Token account
+  * Allow storing non SOL token linked to the Wallet account
+* Token Program account
+  * Stored executable binary on the blockchain
+* Mint account - (**Always linked to the Token program account**)
+  * Unique account link to a Token on the blockchain used to describ it and mint it.
+
+Account structure : 
+
+```json
+{
+  "data": {
+    "type": "Buffer",
+    "data": [] //Binary of the executable code, store data if Mint account or nothing if wallet or token 
+  },
+  "executable": false, //True : Executable code account, False: Wallet account or Mint account or Token account
+  "lamports": 1000000000, // Balance of the wallet in Lamport ( 1 Lamport = 0.000,000,001 SOL )
+  "owner": "11111111111111111111111111111111", // The program that own the account, for wallet it's alaway System Program 111.....
+  "rentEpoch": 0, // Obsolete
+  "space": 0 // Number of bytes of the executable code ( data[] )
+}
+```
+### Mint account 
+
+#### Step 1: Create Wallet Keypair
+```
+Generate a new keypair (wallet)
+└─> Public Key: Used as authority
+└─> Private Key: Signs transactions
+```
+
+**Purpose:** This wallet will control the mint (mint authority & freeze authority)
+
+---
+
+#### Step 2: Initialize Wallet Account
+```
+Fund the wallet with SOL
+└─> Creates a System Account
+└─> Holds SOL for transaction fees and rent
+```
+
+**Requirement:** Wallet needs SOL to pay for:
+- Creating the mint account
+- Rent exemption deposit
+- Transaction fees
+
+---
+
+#### Step 3: Create Mint Keypair
+```
+Generate a new keypair (mint)
+└─> Public Key: The mint's address
+└─> Private Key: Used once during creation
+```
+
+**Purpose:** This becomes the unique address for your token type
+
+---
+
+#### Step 4: Run
+Run the transaction on the blockchain
+
+### Key Components
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| **Wallet Keypair** | Signs transactions & controls mint | `7xK8j2...abc` |
+| **Mint Keypair** | Unique token type address | `9mP4k1...xyz` |
+| **Mint Authority** | Can create new tokens | `wallet.publicKey` |
+| **Freeze Authority** | Can freeze token accounts | `wallet.publicKey` |
+| **Program Owner** | Which program manages this mint | `TOKEN_2022_PROGRAM_ID` |
+
+--- 
+
+## Program Lifecycle
+
+### Deploy
+```bash
+anchor deploy
+```
+- Uploads program binary to blockchain
+- Costs ~2-5 SOL (on mainnet)
+- Creates permanent program account
+
+### Upgrade
+```bash
+anchor upgrade 
+```
+- Same Program ID, updated code
+- Replaces old binary with new one
+
+### Close
+```bash
+solana program close 
+```
+- Deletes program binary
+- Returns SOL to your wallet
+- Account remains (but empty)

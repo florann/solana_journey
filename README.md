@@ -77,3 +77,54 @@ Account structure :
   "space": 0 // Number of bytes of the executable code ( data[] )
 }
 ```
+### Mint account 
+
+#### Step 1: Create Wallet Keypair
+```
+Generate a new keypair (wallet)
+└─> Public Key: Used as authority
+└─> Private Key: Signs transactions
+```
+
+**Purpose:** This wallet will control the mint (mint authority & freeze authority)
+
+---
+
+#### Step 2: Initialize Wallet Account
+```
+Fund the wallet with SOL
+└─> Creates a System Account
+└─> Holds SOL for transaction fees and rent
+```
+
+**Requirement:** Wallet needs SOL to pay for:
+- Creating the mint account
+- Rent exemption deposit
+- Transaction fees
+
+---
+
+#### Step 3: Create Mint Keypair
+```
+Generate a new keypair (mint)
+└─> Public Key: The mint's address
+└─> Private Key: Used once during creation
+```
+
+**Purpose:** This becomes the unique address for your token type
+
+---
+
+#### Step 4: Run
+Run the transaction on the blockchain
+
+### Key Components
+
+| Component | Purpose | Example |
+|-----------|---------|---------|
+| **Wallet Keypair** | Signs transactions & controls mint | `7xK8j2...abc` |
+| **Mint Keypair** | Unique token type address | `9mP4k1...xyz` |
+| **Mint Authority** | Can create new tokens | `wallet.publicKey` |
+| **Freeze Authority** | Can freeze token accounts | `wallet.publicKey` |
+| **Program Owner** | Which program manages this mint | `TOKEN_2022_PROGRAM_ID` |
+

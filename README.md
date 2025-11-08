@@ -1,29 +1,45 @@
-# Solana journey
+# Solana Journey
 Another experimentation, this one on the blockchain :sunglasses:
 
 ## Solana CLI 
 
-### Main commands 
+### Main Commands
 
-- solana config set : Use to configuration on which network the Solana command will be
--- ...set --url localhost : local network 
--- ...set --url devnet : live network environment
--- ...set --url testnet : more realistic network conditions
--- ...set --url mainnet-beta : real environment, real money
+**Network Configuration**
+- `solana config set --url <network>` - Configure which network Solana commands will target:
+  - `--url localhost` - Local network
+  - `--url devnet` - Live network environment
+  - `--url testnet` - More realistic network conditions
+  - `--url mainnet-beta` - Real environment, real money
 
-- solana-keypair new : creating a new wallet
-- solana address : get the current wallet public address on which solana command is bound on
-- solana aidrop X : request to get X SOL token(s)
-- solana balance : get current wallet balance
+**Wallet Management**
+- `solana-keypair new` - Create a new wallet
+- `solana address` - Get the current wallet's public address that Solana commands are bound to
 
-- solana-test-validator : run a test SOL blockchain on local network
+**SOL Operations**
+- `solana airdrop X` - Request X SOL token(s)
+- `solana balance` - Get current wallet balance
+
+**Local Development**
+- `solana-test-validator` - Run a test SOL blockchain on local network
+
+---
 
 ## Anchor CLI
 
-### Main commands
+### Main Commands
 
-- anchor init <projet_name> : create a new anchor project with the choosen name
-- anchor build : to build the project and create a project signature. 
--- To know, if the project as been modified after the build command have run, the program signature will not being valid for deployment and must be rebuilt. 
-- anchor deploy : to deploy project on the network 
-- anchor test : will run "solana-test-validator", "anchor deploy", run tests, shutdown the solana validator
+**Project Setup**
+- `anchor init <project_name>` - Create a new Anchor project with the chosen name
+
+**Build & Deploy**
+- `anchor build` - Build the project and create a program signature
+  - **Note:** If the project is modified after building, the program signature becomes invalid for deployment and must be rebuilt
+- `anchor deploy` - Deploy project to the network
+
+**Testing**
+- `anchor test` - Runs the complete test workflow:
+  1. Starts `solana-test-validator`
+  2. Executes `anchor deploy`
+  3. Runs tests
+  4. Shuts down the Solana validator

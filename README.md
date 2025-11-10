@@ -130,7 +130,20 @@ Run the transaction on the blockchain
 
 --- 
 
-## Program Lifecycle
+## Core Concpets
+
+### Program Derived Address ( PDA )
+
+A Program Derived Address is an address generated thanks to the **Program Id** a **Seed** plus a **Bump** to fall-off the ED25519 curve thus it doesn't have any private key counter part. 
+> So no one expect the program can create the X PDA 
+
+### Cross Programm Invocation ( CPI )
+
+The Cross Program invocation allow a **Program** on the chain to call another one thank to it's PDA, such a call extend privileges from the caller to the callee.
+
+---
+
+## Program Lifecycle Anchor
 
 ### Deploy
 ```bash

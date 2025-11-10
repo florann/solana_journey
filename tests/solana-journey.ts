@@ -54,7 +54,22 @@ describe("solana-journey", () => {
   });
 
   it("Update Message Account", async () => {
+      
+    let message = "Uwu";
+    const transactionSignature = await program.methods
+      .update(message)
+      .accounts({
+        messageAccount: messagePda
+      })
+      .rpc({commitment: "confirmed"});
 
+      const messageAccount = await program.account.messageAccount.fetch(messagePda, "confirmed");
+
+      console.log(JSON.stringify(messageAccount, null, 2));
+      console.log(
+        "Transaction Signature:",
+        `${transactionSignature}`
+      );
   });
 
   it("Delete Message Account", async () => {

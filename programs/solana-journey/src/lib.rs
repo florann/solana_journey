@@ -1,4 +1,5 @@
 use anchor_lang::prelude::*;
+use anchor_lang::system_program::{transfer, Transfer};
 
 declare_id!("2iK5G4otLGBHYC4CFVPuqfxLroE1cCGaNPQ7PEWKRtNG");
 
@@ -22,10 +23,53 @@ pub mod solana_journey {
         Ok(())
     }
 
-    pub fn delete(_ctx: Context<Delete>) -> Result<()> {
-        msg!("Delete Message");
+    pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
+        msg!("Depositing {} lamports to vault", amount);
+        
+        let transfer_accounts = Transfer {
+            from: ctx.accounts.user.to_account_info(),
+            to: ctx.accounts.vault_account.to_account_info(),
+        };
+
+        let cpi_context = CpiContext::new(
+            ctx.accounts.system_program.to_account_info(),
+            transfer_accounts,
+        );
+
+        transfer(cpi_context, amount)?;
         Ok(())
     }
+
+    pub fn delete(ctx: Context<Delete>) -> Result<()> {
+        msg!("Delete Message");
+
+        let user_key = ctx.accounts.user.key();
+        let signer_seeds: &[&[&[u8]]] = &[&[b"vault", user_key.as_ref(), &[ctx.bumps.vault_account]]];
+
+        let transfer_account = Transfer{
+            from: ctx.accounts.vault_account.to_account_info(),
+            to: ctx.accounts.user.to_account_info()
+        };
+
+        let cpi_context = CpiContext::new(ctx.accounts.system_program.to_account_info(),
+        transfer_account).with_signer(signer_seeds);
+        transfer(cpi_context, ctx.accounts.vault_account.lamports())?;
+
+        Ok(())
+    }
+}
+
+#[derive(Accounts)]
+pub struct Deposit<'info> {
+    #[account(mut)]
+    pub user: Signer<'info>,
+    #[account(
+        mut,
+        seeds = [b"vault", user.key().as_ref()],
+        bump,
+    )]
+    pub vault_account: SystemAccount<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -50,7 +94,6 @@ pub struct Create<'info> {
 pub struct Update<'info> {
     #[account(mut)]
     pub user: Signer<'info>,
-
     #[account(
         mut,
         seeds = [b"message", user.key().as_ref()],
@@ -75,6 +118,13 @@ pub struct Delete<'info> {
         close = user,
     )]
     pub message_account: Account<'info, MessageAccount>,
+    #[account(
+        mut,
+        seeds = [b"vault", user.key().as_ref()],
+        bump
+    )]
+    pub vault_account: SystemAccount<'info>,
+    pub system_program: Program<'info, System>,
 }
 
 #[account]

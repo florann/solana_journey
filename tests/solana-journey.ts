@@ -15,6 +15,11 @@ describe("solana-journey", () => {
     program.programId
   );
 
+  const [vaultPda, vaultBump] = PublicKey.findProgramAddressSync(
+    [Buffer.from("vault"), wallet.publicKey.toBuffer()],
+    program.programId
+  );
+
    before(async () => {
     try {
       // Try to delete the account if it exists
@@ -54,21 +59,37 @@ describe("solana-journey", () => {
   });
 
   it("Update Message Account", async () => {
-      
+
+    await provider.connection.requestAirdrop(
+        vaultPda,
+        1000000000 
+    );
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  
     let message = "Uwu";
     const transactionSignature = await program.methods
       .update(message)
       .accounts({
-        messageAccount: messagePda
+        messageAccount: messagePda,
+        vaultAccount: vaultPda
       })
       .rpc({commitment: "confirmed"});
 
-      const messageAccount = await program.account.messageAccount.fetch(messagePda, "confirmed");
+    const depositSignature = await program.methods
+    .deposit(new anchor.BN(1_000_000))
+    .rpc();
+    
+    const messageAccount = await program.account.messageAccount.fetch(messagePda, "confirmed");
 
-      console.log(JSON.stringify(messageAccount, null, 2));
-      console.log(
-        "Transaction Signature:",
+    console.log(JSON.stringify(messageAccount, null, 2));
+    console.log("transactionSignature");
+    console.log(
         `${transactionSignature}`
+      );
+    console.log("depositSignature");
+    console.log(
+        `${depositSignature}`
       );
   });
 
@@ -78,6 +99,7 @@ describe("solana-journey", () => {
         .accounts({
           user: wallet.publicKey,
           messageAccount: messagePda,
+          vaultAccount: vaultPda
         })
         .rpc();
       console.log("Delete");
